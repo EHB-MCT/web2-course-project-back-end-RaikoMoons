@@ -12,7 +12,6 @@ const config = require("./config");
 const connectDB = async () => {
 	try {
 		// Connect to MongoDB using the connection string from config file
-		// Make sure to replace <db_password> in config.js with your actual password
 		const conn = await mongoose.connect(config.MONGODB_URI, {
 			// These options help with connection stability
 			useNewUrlParser: true,
@@ -24,13 +23,13 @@ const connectDB = async () => {
 
 		// Log success message with connection details
 		console.log(
-			"✅ Pinged your deployment. You successfully connected to MongoDB!"
+			" Pinged your deployment. You successfully connected to MongoDB!"
 		);
-		console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-		console.log(`📊 Database: ${conn.connection.name}`);
+		console.log(` MongoDB Connected: ${conn.connection.host}`);
+		console.log(` Database: ${conn.connection.name}`);
 	} catch (error) {
 		// If connection fails, log the error and exit the application
-		console.error("❌ MongoDB connection error:", error.message);
+		console.error(" MongoDB connection error:", error.message);
 		process.exit(1); // Exit with failure code
 	}
 };
