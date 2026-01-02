@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Review API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.8;
+            padding: 0;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 4px solid #34495e;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 30px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #34495e;
+            font-weight: normal;
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.3em;
+            margin: 25px 0 15px 0;
+            font-weight: normal;
+        }
+
+        .endpoint-box {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-left: 4px solid #34495e;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .method-get { background: #27ae60; color: white; }
+        .method-post { background: #3498db; color: white; }
+        .method-put { background: #f39c12; color: white; }
+        .method-delete { background: #e74c3c; color: white; }
+
+        .endpoint-url {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            margin: 15px 0;
+            border-left: 3px solid #3498db;
+            word-break: break-all;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            color: #ecf0f1;
+        }
+
+        .info-box {
+            background: #fff9e6;
+            border: 1px solid #f0d700;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #f0d700;
+        }
+
+        .info-box h4 {
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .test-area {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .test-area h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        button {
+            background: #34495e;
+            color: white;
+            border: 1px solid #2c3e50;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: Georgia, serif;
+            font-size: 0.95em;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2c3e50;
+        }
+
+        #response {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #34495e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: normal;
+            border: 1px solid #2c3e50;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        .required {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .optional {
+            color: #7f8c8d;
+        }
+
+        .usage-steps {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .usage-steps ol {
+            margin-left: 20px;
+        }
+
+        .usage-steps li {
+            margin: 10px 0;
+        }
+
+        .note {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .note strong {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Gym Review API Documentation</h1>
+        <p>Review and compare gyms across Belgium</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>How to Use This API</h2>
+            
+            <div class="usage-steps">
+                <h3>Step-by-Step Guide</h3>
+                <ol>
+                    <li><strong>Base URL:</strong> All API requests should be made to <code>http://localhost:3000</code></li>
+                    <li><strong>Create a User Account:</strong> Use <code>POST /Users</code> to create an account (you'll need the user ID for reviews)</li>
+                    <li><strong>Browse Gyms:</strong> Use <code>GET /Gyms</code> to see all available gyms</li>
+                    <li><strong>Get Gym Details:</strong> Use <code>GET /Gyms/:id</code> with a specific gym ID to see details</li>
+                    <li><strong>Add a Review:</strong> Use <code>POST /Gyms/:id/reviews</code> to review a gym (requires user ID)</li>
+                    <li><strong>Save Favorites:</strong> Use <code>POST /Users/:id/favorites</code> to save gyms to your favorites</li>
+                </ol>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> All requests should include <code>Content-Type: application/json</code> header for POST and PUT requests. Responses are returned in JSON format.
+            </div>
+
+            <div class="test-area">
+                <h3>Test the API</h3>
+                <p>Try these buttons to test the API functionality:</p>
+                <button onclick="getAllGyms()">Get All Gyms</button>
+                <button onclick="createTestGym()">Create Test Gym</button>
+                <button onclick="createTestUser()">Create Test User</button>
+                <button onclick="getAllUsers()">Get All Users</button>
+                <div id="response"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Gym Endpoints</h2>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-get">GET</span> Get All Gyms</h3>
+                <div class="endpoint-url">GET /Gyms</div>
+                <p>Retrieves a list of all gyms. Supports filtering and sorting with query parameters.</p>
+                
+                <h4>Query Parameters:</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><code>sortBy</code> - Sort results: <code>rating</code>, <code>distance</code> or <code>afstand</code>, <code>size</code> or <code>grootte</code></li>
+                    <li><code>filterBy</code> - Filter by: <code>Showers</code> (returns only gyms with HasShower: true)</li>
+                    <li><code>brand</code> - Filter by brand name (case-insensitive, e.g., "Basic-Fit", "Jims")</li>
+                    <li><code>size</code> - Filter by size: <code>klein</code>, <code>middelgroot</code>, or <code>groot</code></li>
+                    <li><code>equipmentType</code> - Filter by equipment type (case-insensitive, matches any equipment containing the string)</li>
+                </ul>
+                
+                <div class="note" style="margin-top: 15px;">
+                    <strong>Note:</strong> When sorting by <code>rating</code>, results are sorted by average rating (highest first). When sorting by <code>size</code> or <code>grootte</code>, results are sorted: klein → middelgroot → groot.
+                </div>
+
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms?sortBy=rating&filterBy=Showers')
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+
+                <h4>Response Format:</h4>
+                <div class="code-block">
+<code>{
+  "success": true,
+  "count": 5,
+  "data": [
+    {
+      "_id": "gym_id_here",
+      "Name": "Basic-Fit Brussel",
+      "Brand": "Basic-Fit",
+      "Equipment": ["Loopband", "Chest Press"],
+      "Size": "middelgroot",
+      "HasShower": true,
+      "Distance": 2.5,
+      "Coordinates": { "lat": 50.8503, "lng": 4.3517 },
+      "Reviews": [...],
+      "averageRating": 4.5,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}</code>
+                </div>
+                
+                <div class="note" style="margin-top: 15px;">
+                    <strong>Note:</strong> The <code>averageRating</code> field is automatically calculated from all reviews. If a gym has no reviews, <code>averageRating</code> will be 0.
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-get">GET</span> Get Single Gym</h3>
+                <div class="endpoint-url">GET /Gyms/:id</div>
+                <p>Retrieves detailed information about a specific gym including all reviews.</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms/GYM_ID_HERE')
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-post">POST</span> Create New Gym</h3>
+                <div class="endpoint-url">POST /Gyms</div>
+                <p>Adds a new gym to the database.</p>
+                
+                <h4>Request Body:</h4>
+                <div class="code-block">
+<code>{
+  "Name": "Basic-Fit Brussel",
+  "Brand": "Basic-Fit",
+  "Equipment": ["Loopband", "Chest Press", "Roeimachine"],
+  "Size": "middelgroot",
+  "HasShower": true,
+  "Distance": 2.5,
+  "Coordinates": {
+    "lat": 50.8503,
+    "lng": 4.3517
+  },
+  "Reviews": []
+}</code>
+                </div>
+
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    Name: 'Basic-Fit Brussel',
+    Brand: 'Basic-Fit',
+    Equipment: ['Loopband', 'Chest Press'],
+    Size: 'middelgroot',
+    HasShower: true,
+    Distance: 2.5,
+    Coordinates: { lat: 50.8503, lng: 4.3517 },
+    Reviews: []
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-put">PUT</span> Update Gym</h3>
+                <div class="endpoint-url">PUT /Gyms/:id</div>
+                <p>Updates an existing gym's information. You can update any field.</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms/GYM_ID_HERE', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    HasShower: true,
+    Size: 'groot'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-delete">DELETE</span> Delete Gym</h3>
+                <div class="endpoint-url">DELETE /Gyms/:id</div>
+                <p>Removes a gym from the database.</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms/GYM_ID_HERE', {
+  method: 'DELETE'
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-post">POST</span> Add Review to Gym</h3>
+                <div class="endpoint-url">POST /Gyms/:id/reviews</div>
+                <p>Add a review to a specific gym. Requires a user account. Each user can only review a gym once.</p>
+                
+                <h4>Request Body (Required Fields):</h4>
+                <div class="code-block">
+<code>{
+  "userId": "USER_ID_HERE",  // Required: Valid user ID
+  "rating": 4,               // Required: Number between 1 and 5
+  "comment": "Goede sfeer!"  // Optional: String (max 500 characters)
+}</code>
+                </div>
+
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Gyms/GYM_ID_HERE/reviews', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    userId: 'USER_ID_HERE',
+    rating: 4,
+    comment: 'Goede sfeer en moderne apparatuur!'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+
+                <div class="note" style="margin-top: 15px;">
+                    <strong>Important:</strong> 
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><code>userId</code> and <code>rating</code> are required</li>
+                        <li><code>comment</code> is optional</li>
+                        <li>Rating must be between 1 and 5</li>
+                        <li>Each user can only review each gym once</li>
+                        <li>The review is automatically added to both the gym and the user's review list</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>User Endpoints</h2>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-get">GET</span> Get All Users</h3>
+                <div class="endpoint-url">GET /Users</div>
+                <p>Retrieves all users. Passwords are not included in the response.</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Users')
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-get">GET</span> Get Single User</h3>
+                <div class="endpoint-url">GET /Users/:id</div>
+                <p>Retrieves detailed user information including reviews and favorite gyms. Password is not included in the response.</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Users/USER_ID_HERE')
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+
+                <div class="note" style="margin-top: 15px;">
+                    <strong>Note:</strong> The response includes populated <code>FavoriteGyms</code> (with Name and Brand) and <code>Reviews.gymId</code> (with Name and Brand) for easy reference.
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-post">POST</span> Create User Account</h3>
+                <div class="endpoint-url">POST /Users</div>
+                <p>Creates a new user account. You'll need the user ID to post reviews.</p>
+                
+                <h4>Request Body:</h4>
+                <div class="code-block">
+<code>{
+  "Name": "Jan Peeters",
+  "Email": "jan.peeters@gmail.com",
+  "Password": "securepassword123",
+  "Age": 25,
+  "Gender": "man",
+  "Location": "Brussel"
+}</code>
+                </div>
+
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    Name: 'Jan Peeters',
+    Email: 'jan.peeters@gmail.com',
+    Password: 'securepassword123',
+    Age: 25,
+    Gender: 'man',
+    Location: 'Brussel'
+  })
+})
+  .then(response => response.json())
+  .then(data => {
+    console.log('User created:', data);
+    console.log('User ID:', data.data._id);
+  });</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-put">PUT</span> Update User</h3>
+                <div class="endpoint-url">PUT /Users/:id</div>
+                <p>Updates user information. Password cannot be updated through this endpoint (it will be ignored if included).</p>
+                
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Users/USER_ID_HERE', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    Location: 'Antwerpen',
+    Age: 26
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-delete">DELETE</span> Delete User</h3>
+                <div class="endpoint-url">DELETE /Users/:id</div>
+                <p>Deletes a user account.</p>
+            </div>
+
+            <div class="endpoint-box">
+                <h3><span class="method-badge method-post">POST</span> Add Gym to Favorites</h3>
+                <div class="endpoint-url">POST /Users/:id/favorites</div>
+                <p>Adds a gym to a user's favorite gyms list. The gym cannot be added if it's already in favorites.</p>
+                
+                <h4>Request Body (Required):</h4>
+                <div class="code-block">
+<code>{
+  "gymId": "GYM_ID_HERE"  // Required: Valid gym ID
+}</code>
+                </div>
+
+                <h4>Example Request:</h4>
+                <div class="code-block">
+<code>fetch('http://localhost:3000/Users/USER_ID_HERE/favorites', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    gymId: 'GYM_ID_HERE'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+                </div>
+
+                <div class="note" style="margin-top: 15px;">
+                    <strong>Note:</strong> If the gym is already in the user's favorites, the request will return an error. The response includes the updated user object (without password).
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Data Schemas</h2>
+
+            <h3>Gym Schema</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Name</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Gym name (e.g., "Basic-Fit Brussel")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Brand</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Brand name (e.g., "Basic-Fit", "Jims")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Equipment</strong></td>
+                        <td>Array of Strings</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Available equipment (e.g., ["Loopband", "Chest Press"])</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Size</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Size: "klein", "middelgroot", or "groot"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HasShower</strong></td>
+                        <td>Boolean</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Whether gym has showers (default: false)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Distance</strong></td>
+                        <td>Number</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Distance in kilometers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Coordinates</strong></td>
+                        <td>Object</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>{lat: number, lng: number} for Google Maps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reviews</strong></td>
+                        <td>Array</td>
+                        <td><span class="optional">No</span></td>
+                        <td>User reviews array</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>User Schema</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Name</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>User's full name</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Email address (must be unique)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Password</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Password (minimum 6 characters)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Age</strong></td>
+                        <td>Number</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>Age (13-120)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gender</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>"man", "vrouw", or "anders"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Location</strong></td>
+                        <td>String</td>
+                        <td><span class="required">Yes</span></td>
+                        <td>City or region (e.g., "Brussel")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FavoriteGyms</strong></td>
+                        <td>Array</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Array of gym IDs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reviews</strong></td>
+                        <td>Array</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Reviews posted by user</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="info-box">
+                <h4>Easter Egg</h4>
+                <p>Try creating a gym with the name <strong>"Gym Master"</strong> (case insensitive). It will automatically get premium features including groot size, premium equipment, and showers enabled!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/Gyms';
+        const USER_API_URL = 'http://localhost:3000/Users';
+        const responseDiv = document.getElementById('response');
+
+        function displayResponse(data) {
+            responseDiv.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function getAllGyms() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayResponse({ error: error.message });
+            }
+        }
+
+        async function createTestGym() {
+            const gymData = {
+                Name: `Test Gym ${Date.now()}`,
+                Brand: 'Test Brand',
+                Equipment: ['Loopband', 'Chest Press'],
+                Size: 'middelgroot',
+                HasShower: true,
+                Distance: 1.5,
+                Coordinates: {
+                    lat: 50.8503,
+                    lng: 4.3517
+                },
+                Reviews: []
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gymData)
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayResponse({ error: error.message });
+            }
+        }
+
+        async function createTestUser() {
+            const userData = {
+                Name: `Test User ${Date.now()}`,
+                Email: `test${Date.now()}@example.com`,
+                Password: 'test123456',
+                Age: 25,
+                Gender: 'man',
+                Location: 'Brussel'
+            };
+
+            try {
+                const response = await fetch(USER_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayResponse({ error: error.message });
+            }
+        }
+
+        async function getAllUsers() {
+            try {
+                const response = await fetch(USER_API_URL);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayResponse({ error: error.message });
+            }
+        }
+    </script>
+</body>
+</html>

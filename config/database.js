@@ -1,36 +1,58 @@
 // Database connection configuration
 // This file handles the connection to MongoDB Atlas
 
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
 const config = require("./config");
 
 /**
- * Connect to MongoDB Atlas database
+ * Connect to MongoDB Atlas database using MongoClient
  * This function establishes a connection to the cloud database
- * Uses Mongoose ODM which provides schema validation and easier data modeling
+ * If connection fails, the server will continue with dummy data
  */
 const connectDB = async () => {
+	const uri = config.MONGODB_URI;
+
+	// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+	const client = new MongoClient(uri, {
+		serverApi: {
+			version: ServerApiVersion.v1,
+			strict: true,
+			deprecationErrors: true,
+		},
+	});
+
 	try {
-		// Connect to MongoDB using the connection string from config file
-		const conn = await mongoose.connect(config.MONGODB_URI, {
-			// These options help with connection stability
+		// Connect the client to the server (optional starting in v4.7)
+		await client.connect();
+		// Send a ping to confirm a successful connection
+		await client.db("admin").command({ ping: 1 });
+		console.log(
+			"Pinged your deployment. You successfully connected to MongoDB!"
+		);
+
+		// Also connect Mongoose for model operations
+		// Add database name to the URI for Mongoose connection
+		const mongooseUri = uri.replace(
+			"/?appName=",
+			"/gym-db?retryWrites=true&w=majority&appName="
+		);
+		await mongoose.connect(mongooseUri, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 		});
 
-		// Send a ping to confirm a successful connection
-		await mongoose.connection.db.admin().command({ ping: 1 });
-
-		// Log success message with connection details
-		console.log(
-			" Pinged your deployment. You successfully connected to MongoDB!"
-		);
-		console.log(` MongoDB Connected: ${conn.connection.host}`);
-		console.log(` Database: ${conn.connection.name}`);
+		console.log(` MongoDB Connected: ${client.options.srvHost}`);
+		console.log(` Database: gym-db`);
+		return true; // Connection successful
 	} catch (error) {
-		// If connection fails, log the error and exit the application
+		// If connection fails, log the error but don't exit - use dummy data instead
 		console.error(" MongoDB connection error:", error.message);
-		process.exit(1); // Exit with failure code
+		console.log(" Using dummy data mode - API will work with in-memory data");
+		return false; // Connection failed, will use dummy data
+	} finally {
+		// Note: We don't close the client here as we need it for the application
+		// The connection will remain open for the lifetime of the application
 	}
 };
 
