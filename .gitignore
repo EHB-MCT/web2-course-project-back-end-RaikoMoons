@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Configuration file with sensitive data
+config/config.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+config/config.example.js
